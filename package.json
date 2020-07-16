@@ -1,0 +1,7 @@
+{
+  "name": "POEditor",
+  "version": "0.0.1",
+  "description": "POEditor API for Node.js",
+  "main": "index.js",
+  "license": "MIT"
+}
