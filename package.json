@@ -1,5 +1,5 @@
 {
-  "name": "poeditor",
+  "name": "@sylverfox/poeditor",
   "version": "0.1.0",
   "description": "POEditor API wrapper for Node.js",
   "repository": "https://github.com/SylverFox/poeditor.git",
