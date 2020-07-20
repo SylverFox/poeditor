@@ -1,9 +1,10 @@
 {
   "name": "@sylverfox/poeditor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "POEditor API wrapper for Node.js",
   "repository": "https://github.com/SylverFox/poeditor.git",
   "bugs": "https://github.com/SylverFox/poeditor/issues",
+  "keywords": [ "poeditor", "poeditor-api", "translations" ],
   "author": "Joris Diesvelt <jorisdiesvelt@gmail.com>",
   "license": "MIT",
 
@@ -23,10 +24,11 @@
     "rimraf": "^3.0.2"
   },
   "scripts": {
-    "lint": "eslint --fix src/*"
+    "lint": "eslint --fix src/*",
+    "build": "rimraf dist/ && tsc",
+    "prepublishOnly": "yarn lint && yarn build" 
   },
 
-  "prepare": "rimraf dist/ && tsc",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [

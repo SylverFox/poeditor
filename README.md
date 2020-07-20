@@ -11,7 +11,7 @@ yarn add @sylverfox/poeditor
 ## Usage
 
 ```ts
-import * as POEditor from 'poeditor'
+import * as POEditor from '@sylverfox/poeditor'
 
 POEditor.projects.list('<api_token>')
   .then({ projects } => console.log(projects))
