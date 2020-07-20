@@ -1,13 +1,14 @@
 import * as https from 'https'
 import * as querystring from 'querystring'
+// eslint-disable-next-line no-unused-vars
 import * as Types from './types'
 
 export * from './types'
 
-function api_call (path: string, data: any) {
-  const postData = querystring.stringify(data)
-
+function api_call (path: string, data: any): Promise<Types.Response> {
   return new Promise((resolve, reject) => {
+    const postData = querystring.stringify(data)
+
     const req = https.request({
       hostname: 'api.poeditor.com',
       path: '/v2/' + path,
@@ -20,11 +21,11 @@ function api_call (path: string, data: any) {
       let data = ''
       res.on('data', d => { data += d })
         .on('end', () => {
-          const response: Types.Response = Object.assign(new Types.Response(), JSON.parse(data))
-          if (response.status === 'success' && response.code === '200') {
-            resolve(response.result)
+          const response = JSON.parse(data) as Types.Response
+          if (response.response.status === 'success' && response.response.code === '200') {
+            resolve(response)
           } else {
-            reject(response.message)
+            reject(response.response.message)
           }
         })
     }).on('error', reject)
@@ -37,13 +38,13 @@ function api_call (path: string, data: any) {
 export const projects = {
   list: (api_token: string) => api_call('projects/list', {
     api_token
-  }),
+  }).then(res => res.result.projects),
   view: (api_token: string, id: number) => api_call('projects/view', {
     api_token, id
-  }),
+  }).then(res => res.result.project),
   add: (api_token: string, name: string, description?: string) => api_call('projects/add', {
     api_token, name, description
-  }),
+  }).then(res => res.result.project),
   update: (
     api_token: string,
     id: number,
@@ -52,10 +53,10 @@ export const projects = {
     reference_language?: string
   ) => api_call('projects/update', {
     api_token, id, name, description, reference_language
-  }),
+  }).then(res => res.result.project),
   delete: (api_token: string, id: number) => api_call('projects/delete', {
     api_token, id
-  }),
+  }).then(res => res.response.message),
   upload: (
     api_token: string,
     id: number,
@@ -67,10 +68,13 @@ export const projects = {
     tags?: Array<string> | Types.UpdateTags
   ) => api_call('projects/upload', {
     api_token, id, updating, file, language, overwrite, sync_terms, tags
-  }),
+  }).then(res => ({
+    terms: res.result.terms as Types.ModifiedCount,
+    translations: res.result.translations
+  })),
   sync: (api_token: string, id: number, data: Array<Types.Term>) => api_call('projects/sync', {
     api_token, id, data
-  }),
+  }).then(res => res.result.terms as Types.ModifiedCount),
   export: (
     api_token: string,
     id: number,
@@ -81,19 +85,19 @@ export const projects = {
     tags?: string | Array<string>
   ) => api_call('projects/export', {
     api_token, id, language, type, filters, order, tags
-  })
+  }).then(res => res.result.url)
 }
 
 export const languages = {
   available: (api_token: string) => api_call('languages/available', {
     api_token
-  }),
+  }).then(res => res.result.languages as Types.Language[]),
   list: (api_token: string, id: number) => api_call('languages/list', {
     api_token, id
-  }),
+  }).then(res => res.result.languages as Types.FullLanguage[]),
   add: (api_token: string, id: number, language: string) => api_call('languages/add', {
     api_token, id, language
-  }),
+  }).then(res => res.response.message),
   update: (
     api_token: string,
     id: number,
@@ -102,19 +106,19 @@ export const languages = {
     fuzzy_trigger?: 0 | 1
   ) => api_call('languages/update', {
     api_token, id, language, fuzzy_trigger, data
-  }),
+  }).then(res => res.result.translations),
   delete: (api_token: string, id: number, language: string) => api_call('languages/delete', {
     api_token, id, language
-  })
+  }).then(res => res.response.message)
 }
 
 export const terms = {
   list: (api_token: string, id: number, language?: string) => api_call('terms/list', {
     api_token, id, language
-  }),
+  }).then(res => res.result.terms as Types.FullTerm[]),
   add: (api_token: string, id: number, data: Array<Types.Term>) => api_call('terms/add', {
     api_token, id, data
-  }),
+  }).then(res => res.result.terms as Types.ModifiedCount),
   update: (
     api_token: string,
     id: number,
@@ -122,17 +126,17 @@ export const terms = {
     fuzzy_trigger?: 0 | 1
   ) => api_call('terms/update', {
     api_token, id, data, fuzzy_trigger
-  }),
+  }).then(res => res.result.terms as Types.ModifiedCount),
   delete: (api_token: string, id: number, data: Array<Types.BaseTerm>) => api_call('terms/delete', {
     api_token, id, data
-  }),
+  }).then(res => res.result.terms as Types.ModifiedCount),
   add_comment: (
     api_token: string,
     id: number,
     data: Array<Types.CommmentedTerm>
   ) => api_call('terms/add_comment', {
     api_token, id, data
-  })
+  }).then(res => res.result.terms as Types.ModifiedCount)
 }
 
 export const translations = {
@@ -143,7 +147,7 @@ export const translations = {
     data: Array<Types.Translation>
   ) => api_call('translations/add', {
     api_token, id, language, data
-  }),
+  }).then(res => res.result.translations),
   update: (
     api_token: string,
     id: number,
@@ -151,16 +155,16 @@ export const translations = {
     data: Array<Types.BaseTerm>
   ) => api_call('translations/update', {
     api_token, id, language, data
-  }),
+  }).then(res => res.result.translations),
   delete: (api_token: string, id: number, language: string) => api_call('translations/delete', {
     api_token, id, language
-  })
+  }).then(res => res.result.translations)
 }
 
 export const contributors = {
   list: (api_token: string, id?: number, language?: string) => api_call('contributors/list', {
     api_token, id, language
-  }),
+  }).then(res => res.result.contributors),
   add: (
     api_token: string,
     id: number,
@@ -170,7 +174,7 @@ export const contributors = {
     admin?: 0 | 1
   ) => api_call('contributors/add', {
     api_token, id, name, email, language, admin
-  }),
+  }).then(res => res.response.message),
   remove: (
     api_token: string,
     id: number,
@@ -178,5 +182,5 @@ export const contributors = {
     language?: string
   ) => api_call('contributors/remove', {
     api_token, id, email, language
-  })
+  }).then(res => res.response.message)
 }

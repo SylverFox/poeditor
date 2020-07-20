@@ -78,33 +78,80 @@ export interface Translation {
   }
 }
 
-export class Response {
+export interface Response {
   response: {
     status: string,
     code: string,
     message: string
   }
+  result: Result
+}
 
-  result: Object
+export interface Result {
+  projects?: Array<Project>
+  project?: FullProject,
+  terms?: ModifiedCount | Array<FullTerm>,
+  translations?: ModifiedCount
+  url?: string,
+  languages?: Array<Language> | Array<FullLanguage>,
+  contributors?: Array<Contributor>
+}
+export interface Project {
+  id: number,
+  name: string,
+  public: number,
+  open: number,
+  created: string
+}
 
-  constructor () {
-    this.response = {
-      status: '',
-      code: '',
-      message: ''
-    }
-    this.result = {}
+export interface FullProject extends Project {
+  description: string,
+  reference_language: string,
+  terms: number
+}
+
+export interface Language {
+  name: string,
+  code: string,
+}
+
+export interface FullLanguage extends Language{
+  translations: number,
+  percentage: number,
+  updated: string
+}
+
+export interface FullTerm extends Term {
+  created: string,
+  updated: string,
+  translation: {
+    content: string | {
+      one: string,
+      other: string
+    },
+    fuzzy: 0 | 1,
+    proofread: 0 | 1,
+    updated: string
   }
+}
 
-  get status () {
-    return this.response.status
-  }
+export interface ModifiedCount {
+  parsed: number,
+  added?: number,
+  updated?: number,
+  deleted?: number
+  with_added_comment?: number
+}
 
-  get code () {
-    return this.response.code
-  }
-
-  get message () {
-    return this.response.message
-  }
+export interface Contributor {
+  name: string,
+  email: string,
+  permissions: Array<{
+    project: {
+      id: number,
+      name: string
+    },
+    type: string,
+    proofreader: boolean
+  }>
 }
