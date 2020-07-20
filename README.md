@@ -5,7 +5,7 @@ A simple POEditor API wrapper for Node.js
 ## Installation
 
 ```
-yarn add poeditor
+yarn add @SylverFox/poeditor
 ```
 
 ## Usage

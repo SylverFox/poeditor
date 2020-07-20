@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "description": "POEditor API wrapper for Node.js",
   "repository": "https://github.com/SylverFox/poeditor.git",
+  "bugs": "https://github.com/SylverFox/poeditor/issues",
   "author": "Joris Diesvelt <jorisdiesvelt@gmail.com>",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "license": "MIT",
+
+  "dependencies": {
+    "typescript": "^3.9.7"
+  },
   "devDependencies": {
     "@types/node": "^14.0.23",
     "@typescript-eslint/eslint-plugin": "^3.6.1",
@@ -16,13 +19,17 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1"
+    "eslint-plugin-standard": "^4.0.1",
+    "rimraf": "^3.0.2"
   },
   "scripts": {
     "lint": "eslint --fix src/*"
   },
-  "prepublish": "tsc",
-  "dependencies": {
-    "typescript": "^3.9.7"
-  }
+
+  "prepare": "rimraf dist/ && tsc",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ]
 }
