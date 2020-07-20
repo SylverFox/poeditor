@@ -2,7 +2,9 @@ import * as https from 'https'
 import * as querystring from 'querystring'
 import * as Types from './types'
 
-function api_call (path: string, data) {
+export * from './types'
+
+function api_call (path: string, data: any) {
   const postData = querystring.stringify(data)
 
   return new Promise((resolve, reject) => {

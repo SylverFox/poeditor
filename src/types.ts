@@ -87,6 +87,15 @@ export class Response {
 
   result: Object
 
+  constructor () {
+    this.response = {
+      status: '',
+      code: '',
+      message: ''
+    }
+    this.result = {}
+  }
+
   get status () {
     return this.response.status
   }
